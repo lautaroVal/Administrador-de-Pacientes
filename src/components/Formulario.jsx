@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import Error from './Error'
 
 const Formulario = ({pacientes, setPacientes}) => {   // funtion expression
   const [nombre, setNombre] = useState('')
@@ -8,6 +9,13 @@ const Formulario = ({pacientes, setPacientes}) => {   // funtion expression
   const [sintomas, setSintomas] = useState('')
 
   const [error, setError] = useState(false)
+
+  const generarId = () => {
+    const random = Math.random().toString(36).substr(2)
+    const fecha = Date.now().toString(36)
+
+    return fecha + random 
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -28,7 +36,8 @@ const Formulario = ({pacientes, setPacientes}) => {   // funtion expression
       propietario,
       email,
       fecha,
-      sintomas
+      sintomas,
+      id: generarId()
     }
 
    //console.log(objetoPaciente)
@@ -53,11 +62,7 @@ const Formulario = ({pacientes, setPacientes}) => {   // funtion expression
       <form  onSubmit={handleSubmit}
       className="bg-white shadow-md rounded-lg py-10 px-5 mb-10">
          {/* No se puede usar un if pero si un ternario o corto circuito */}
-        { error && (
-        <div className="bg-red-800 text-white text-center font-bold p-3 uppercase mb-3 rounded-md">
-          <p>Todos los campos son obligatorios</p>
-          </div>
-        ) }
+        { error && <Error><p>Todos los campos son obligatorios</p></Error> }
 
         <div className="mb-5">
           <label
