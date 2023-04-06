@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import Error from './Error'
 
-const Formulario = ({pacientes, setPacientes}) => {   // funtion expression
+const Formulario = ({pacientes, setPacientes, paciente, setPaciente}) => {   // funtion expression
   const [nombre, setNombre] = useState('')
   const [propietario, setPropietario] = useState('')
   const [email, setEmail] = useState('')
@@ -9,6 +9,17 @@ const Formulario = ({pacientes, setPacientes}) => {   // funtion expression
   const [sintomas, setSintomas] = useState('')
 
   const [error, setError] = useState(false)
+
+  useEffect(() => {
+    if(Object.keys(paciente).length > 0) {
+      setNombre(paciente.nombre)
+      setPropietario(paciente.propietario)
+      setEmail(paciente.email)
+      setFecha(paciente.fecha)
+      setSintomas(paciente.sintomas)
+    }
+  }, [paciente])
+
 
   const generarId = () => {
     const random = Math.random().toString(36).substr(2)
@@ -36,13 +47,26 @@ const Formulario = ({pacientes, setPacientes}) => {   // funtion expression
       propietario,
       email,
       fecha,
-      sintomas,
-      id: generarId()
+      sintomas
     }
 
-   //console.log(objetoPaciente)
+    if (paciente.id) {
+      //Editando registro
+      objetoPaciente.id = paciente.id
 
-    setPacientes([...pacientes, objetoPaciente])
+      const pacientesActualizados = pacientes.map( pacienteState => pacienteState.id === 
+        paciente.id ? objetoPaciente : pacienteState )
+
+        setPacientes(pacientesActualizados)
+        setPaciente({})
+
+    }else{
+      //Nuevo registro
+      objetoPaciente.id = generarId()
+      setPacientes([...pacientes, objetoPaciente])
+
+
+    }
 
     // Reniciar el Formulario
     setNombre('')
@@ -155,7 +179,7 @@ const Formulario = ({pacientes, setPacientes}) => {   // funtion expression
         <input 
         type="submit" 
         className="bg-indigo-600 w-full p-3 text-white uppercase font-bold hover:bg-indigo-700 cursor-pointer transition-colors"
-        value="Agregar Paciente"
+        value={ paciente.id ? 'Editar Paciente' : 'Agregar Paciente'}
         />
 
       </form>
